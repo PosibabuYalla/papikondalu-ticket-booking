@@ -314,8 +314,8 @@ export default function TicketsPage() {
                   <div className="p-5">
                     <div className="flex gap-5">
                       {/* QR */}
-                      <div className="bg-gray-50 rounded-xl p-4 flex items-center justify-center flex-shrink-0 w-24 h-24">
-                        <QrCode className="w-16 h-16 text-ink" />
+                      <div className="bg-gray-50 rounded-xl p-3 flex items-center justify-center flex-shrink-0 w-24 h-24">
+                        <QRCodeSVG value={ticket.qrPayload || ticket.bookingRef} size={72} fgColor="#0f2d3d" bgColor="white" level="H" />
                       </div>
                       {/* Details */}
                       <div className="flex-1">
