@@ -3,8 +3,10 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 
 export const metadata: Metadata = {
-  title: 'Terms and Conditions',
-  description: 'Terms and conditions for booking Papikondalu boat tours with Aswini Godavari Travel.',
+  title: 'Terms and Conditions | Papikondalu Tourism – Aswini Godavari Travel',
+  description: 'Terms and conditions for booking Papikondalu boat tours with Aswini Godavari Travel. Covers bookings, safety rules, cancellations, liability and grievance redressal.',
+  alternates: { canonical: 'https://www.papikondalutourism.com/terms-and-conditions' },
+  robots: { index: true, follow: false },
 }
 
 const sections = [

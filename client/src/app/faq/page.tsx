@@ -6,8 +6,18 @@ import Link from 'next/link'
 import { Phone, MessageCircle } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'FAQ',
-  description: 'Frequently asked questions about Papikondalu boat tours — pricing, safety, cancellations, boarding and more.',
+  title: 'Papikondalu FAQ | Frequently Asked Questions About Boat Tours & Online Booking',
+  description: 'Frequently asked questions about Papikondalu boat tours — online ticket booking, pricing (from ₹1,500), safety, cancellation policy, best season (Oct–Mar), boarding points and more.',
+  keywords: [
+    'Papikondalu FAQ', 'Papikondalu tour questions', 'Papikondalu ticket price',
+    'Papikondalu online booking help', 'Godavari boat tour safety', 'Papikondalu cancellation policy',
+  ],
+  alternates: { canonical: 'https://www.papikondalutourism.com/faq' },
+  openGraph: {
+    title: 'Papikondalu FAQ | Boat Tours & Online Ticket Booking Questions',
+    description: 'Everything you need to know about Papikondalu online ticket booking, pricing, safety and cancellations.',
+    url: 'https://www.papikondalutourism.com/faq',
+  },
 }
 
 export default function FAQPage() {

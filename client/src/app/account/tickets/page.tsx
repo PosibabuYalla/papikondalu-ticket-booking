@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import Link from 'next/link'
-import { Download, ArrowLeft, Loader2, Calendar, MapPin, Users, Ticket, FileDown } from 'lucide-react'
+import { ArrowLeft, Loader2, Calendar, MapPin, Users, Ticket, FileDown } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api/v1'
@@ -16,11 +16,27 @@ type TicketData = {
 
 /* ── Load script from CDN once ── */
 function loadScript(src: string): Promise<void> {
-  if (document.querySelector(`script[src="${src}"]`)) return Promise.resolve()
+  const ready = src.includes('html2canvas')
+    ? (window as any).html2canvas
+    : (window as any).jspdf
+  if (ready) return Promise.resolve()
+
+  const existing = document.querySelector<HTMLScriptElement>(`script[src="${src}"]`)
+  if (existing) {
+    return new Promise((resolve, reject) => {
+      existing.addEventListener('load', () => resolve(), { once: true })
+      existing.addEventListener('error', () => reject(new Error(`Unable to load ${src}`)), { once: true })
+    })
+  }
+
   return new Promise((resolve, reject) => {
     const s = document.createElement('script')
     s.src = src; s.crossOrigin = 'anonymous'
-    s.onload = () => resolve(); s.onerror = reject
+    s.onload = () => resolve()
+    s.onerror = () => {
+      s.remove()
+      reject(new Error(`Unable to load ${src}`))
+    }
     document.head.appendChild(s)
   })
 }
@@ -212,7 +228,9 @@ export default function TicketsPage() {
   const [loading, setLoading] = useState(true)
   const [renderTicket, setRenderTicket] = useState<TicketData | null>(null)
   const [downloadingId, setDownloadingId] = useState<string | null>(null)
+  const [downloadError, setDownloadError] = useState('')
   const ticketRef = useRef<HTMLDivElement>(null)
+  const mobilePdfWindow = useRef<Window | null>(null)
 
   useEffect(() => {
     fetch(`${API}/tickets/my`, { credentials: 'include' })
@@ -249,9 +267,28 @@ export default function TicketsPage() {
         const imgH = canvas.height / 2
         const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [imgW, imgH] })
         pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgW, imgH)
-        pdf.save(`Ticket-${renderTicket.bookingRef}.pdf`)
+        const blob = pdf.output('blob')
+        const url = URL.createObjectURL(blob)
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+          || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+
+        if (isIOS && mobilePdfWindow.current && !mobilePdfWindow.current.closed) {
+          mobilePdfWindow.current.location.href = url
+          window.setTimeout(() => URL.revokeObjectURL(url), 60_000)
+        } else {
+          const link = document.createElement('a')
+          link.href = url
+          link.download = `Ticket-${renderTicket.bookingRef}.pdf`
+          document.body.appendChild(link)
+          link.click()
+          link.remove()
+          window.setTimeout(() => URL.revokeObjectURL(url), 60_000)
+        }
       } catch (e) {
         console.error('PDF generation failed', e)
+        mobilePdfWindow.current?.close()
+        mobilePdfWindow.current = null
+        setDownloadError('Could not generate the ticket PDF. Please try again.')
       } finally {
         if (!cancelled) {
           setRenderTicket(null)
@@ -267,6 +304,10 @@ export default function TicketsPage() {
 
   const handleDownload = (ticket: TicketData) => {
     if (downloadingId) return
+    setDownloadError('')
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+      || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+    if (isIOS) mobilePdfWindow.current = window.open('about:blank', '_blank')
     setDownloadingId(ticket.ticketId)
     setRenderTicket(ticket)
   }
@@ -336,8 +377,15 @@ export default function TicketsPage() {
                       </div>
                     </div>
                     <div className="mt-4 pt-4 border-t border-gray-100 flex gap-3">
-                      <button className="btn-secondary text-sm flex items-center gap-1.5">
-                        <Download className="w-3.5 h-3.5" /> Download PDF
+                      <button
+                        onClick={() => handleDownload(ticket)}
+                        disabled={downloadingId !== null}
+                        className="btn-secondary text-sm flex items-center gap-1.5 disabled:opacity-60"
+                      >
+                        {downloadingId === ticket.ticketId
+                          ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating PDF…</>
+                          : <FileDown className="w-3.5 h-3.5" />}
+                        {downloadingId === ticket.ticketId ? null : 'Download PDF'}
                       </button>
                     </div>
                   </div>
@@ -345,6 +393,12 @@ export default function TicketsPage() {
               ))}
             </div>
           )}
+          {downloadError && (
+            <p role="alert" className="mt-4 text-sm text-red-600">{downloadError}</p>
+          )}
+          <p className="mt-3 text-xs text-muted">
+            On iPhone or iPad, the PDF opens in a new tab. Use Share, then Save to Files to keep a copy.
+          </p>
         </div>
       </main>
       <Footer />

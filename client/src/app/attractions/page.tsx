@@ -6,8 +6,20 @@ import Link from 'next/link'
 import { Clock, MapPin, ArrowRight, Info } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Attractions & Destinations',
-  description: 'Explore Papikondalu hills, Bhadrachalam temple, Maredumilli waterfalls, Parnasala and more destinations along the Godavari river in Andhra Pradesh.',
+  title: 'Papikondalu Attractions & Destinations | Godavari River Tourism Guide',
+  description: 'Explore Papikondalu hills, Bhadrachalam temple, Maredumilli waterfalls, Parnasala, Sirivaka camp, Perantalapalli and Gudisa — complete guide to Godavari river destinations in Andhra Pradesh.',
+  keywords: [
+    'Papikondalu hills', 'Papikondalu attractions', 'Bhadrachalam temple tour',
+    'Maredumilli waterfalls', 'Parnasala Ramayana site', 'Sirivaka camping Papikondalu',
+    'Perantalapalli boat tour', 'Gudisa hill station', 'Godavari river destinations',
+    'East Godavari tourist places', 'Andhra Pradesh tourism',
+  ],
+  alternates: { canonical: 'https://www.papikondalutourism.com/attractions' },
+  openGraph: {
+    title: 'Papikondalu Attractions & Destinations | Godavari River Tourism Guide',
+    description: 'Papikondalu hills, Bhadrachalam temple, Maredumilli waterfalls, Parnasala, Sirivaka camp — all accessible by Godavari river cruise.',
+    url: 'https://www.papikondalutourism.com/attractions',
+  },
 }
 
 const attractions = [

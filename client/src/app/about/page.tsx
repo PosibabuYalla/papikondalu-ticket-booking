@@ -6,8 +6,18 @@ import Link from 'next/link'
 import { Shield, Users, Star, Anchor, MapPin, Phone, ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'About Us',
-  description: 'Learn about Aswini Godavari Travel — trusted Papikondalu boat tour operator since 2004, serving 7 lakh+ travellers with safe and authentic Godavari river cruises.',
+  title: 'About Us | Aswini Godavari Travel – Papikondalu Boat Tour Operator Since 2004',
+  description: 'Learn about Aswini Godavari Travel — trusted Papikondalu boat tour operator since 2004, serving 7 lakh+ travellers with safe and authentic Godavari river cruises from Rajahmundry and Bhadrachalam.',
+  keywords: [
+    'Aswini Godavari Travel', 'Papikondalu tour operator', 'Godavari boat tour company',
+    'Rajahmundry tourism', 'Papikondalu tourism since 2004',
+  ],
+  alternates: { canonical: 'https://www.papikondalutourism.com/about' },
+  openGraph: {
+    title: 'About Aswini Godavari Travel – Papikondalu Boat Tour Operator Since 2004',
+    description: 'Trusted Papikondalu boat tour operator since 2004, serving 7 lakh+ travellers with safe Godavari river cruises.',
+    url: 'https://www.papikondalutourism.com/about',
+  },
 }
 
 const milestones = [

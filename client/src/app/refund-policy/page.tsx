@@ -4,8 +4,10 @@ import Footer from '@/components/layout/Footer'
 import { CheckCircle2, Clock, AlertCircle } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Refund Policy',
-  description: 'Refund policy and timeline for Papikondalu boat tour cancellations.',
+  title: 'Refund Policy | Papikondalu Tour Booking – Aswini Godavari Travel',
+  description: 'Refund policy and timeline for Papikondalu boat tour cancellations. Refunds processed within 2 business days, credited in 5–7 business days via UPI, card or net banking.',
+  keywords: ['Papikondalu refund policy', 'Godavari tour refund', 'Papikondalu booking refund'],
+  alternates: { canonical: 'https://www.papikondalutourism.com/refund-policy' },
 }
 
 export default function RefundPolicyPage() {

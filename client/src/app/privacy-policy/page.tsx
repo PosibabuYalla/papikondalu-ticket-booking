@@ -3,8 +3,10 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy',
-  description: 'Privacy policy for Aswini Godavari Travel & Tourism booking platform.',
+  title: 'Privacy Policy | Papikondalu Tourism – Aswini Godavari Travel',
+  description: 'Privacy policy for the Aswini Godavari Travel & Tourism Papikondalu online ticket booking platform. How we collect, use and protect your personal data.',
+  alternates: { canonical: 'https://www.papikondalutourism.com/privacy-policy' },
+  robots: { index: true, follow: false },
 }
 
 const sections = [

@@ -5,8 +5,10 @@ import Link from 'next/link'
 import { CheckCircle2, XCircle, AlertCircle, Phone } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Cancellation Policy',
-  description: 'Aswini Godavari Travel cancellation and refund policy for Papikondalu boat tour packages.',
+  title: 'Cancellation Policy | Papikondalu Tour Booking – Aswini Godavari Travel',
+  description: 'Cancellation and refund policy for Papikondalu boat tour packages. Full refund 48+ hrs before departure, 50% refund 24–48 hrs, no refund within 24 hrs. Weather cancellations get full refund.',
+  keywords: ['Papikondalu cancellation policy', 'Papikondalu refund policy', 'Godavari tour cancellation'],
+  alternates: { canonical: 'https://www.papikondalutourism.com/cancellation-policy' },
 }
 
 const tiers = [

@@ -6,8 +6,18 @@ import Link from 'next/link'
 import { Calendar, Clock, ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Travel Blog',
-  description: 'Papikondalu and Godavari river travel guides, tips, and stories from our team.',
+  title: 'Papikondalu Travel Blog | Godavari River Tour Guides & Tips',
+  description: 'Papikondalu and Godavari river travel guides, tips and stories — best time to visit, what to expect on the boat tour, Bhadrachalam temple guide, Maredumilli waterfalls and more.',
+  keywords: [
+    'Papikondalu travel guide', 'Godavari river tour blog', 'Papikondalu best time to visit',
+    'Bhadrachalam travel guide', 'Maredumilli waterfalls guide', 'Andhra Pradesh travel blog',
+  ],
+  alternates: { canonical: 'https://www.papikondalutourism.com/blog' },
+  openGraph: {
+    title: 'Papikondalu Travel Blog | Godavari River Tour Guides & Tips',
+    description: 'Papikondalu and Godavari river travel guides, tips and stories from our team.',
+    url: 'https://www.papikondalutourism.com/blog',
+  },
 }
 
 const posts = [

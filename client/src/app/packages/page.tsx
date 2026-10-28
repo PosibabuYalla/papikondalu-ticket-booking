@@ -4,9 +4,21 @@ import Footer from '@/components/layout/Footer'
 import PackagesList from '@/components/packages/PackagesList'
 
 export const metadata: Metadata = {
-  title: 'Tour Packages',
+  title: 'Papikondalu Tour Packages | Online Ticket Booking – All 9 Packages',
   description:
-    'Browse Papikondalu tour packages — one-day boat rides, two-day temple tours, night camping and waterfall adventures from Rajahmundry and Bhadrachalam.',
+    'Browse all Papikondalu tour packages and book online tickets instantly — Rajahmundry one-day boat tour, Bhadrachalam two-day temple tour, Sirivaka night stay, Maredumilli waterfalls, Parnasala, Gudisa & more.',
+  keywords: [
+    'Papikondalu tour packages', 'Papikondalu online ticket booking', 'Papikondalu one day tour',
+    'Rajahmundry to Papikondalu tour', 'Bhadrachalam Papikondalu package',
+    'Sirivaka night stay package', 'Maredumilli waterfalls tour', 'Parnasala tour package',
+    'Gudisa hill station tour', 'Godavari boat tour packages', 'Papikondalu ticket price',
+  ],
+  alternates: { canonical: 'https://www.papikondalutourism.com/packages' },
+  openGraph: {
+    title: 'Papikondalu Tour Packages | Online Ticket Booking',
+    description: 'All 9 Papikondalu tour packages — book online tickets instantly from Rajahmundry & Bhadrachalam.',
+    url: 'https://www.papikondalutourism.com/packages',
+  },
 }
 
 export default function PackagesPage() {

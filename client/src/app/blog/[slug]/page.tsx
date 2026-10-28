@@ -54,7 +54,24 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const post = POSTS[slug]
   if (!post) return { title: 'Post Not Found' }
-  return { title: post.title, description: post.content[0]?.p.slice(0, 160) }
+  const description = post.content[0]?.p.slice(0, 160) ?? ''
+  const url = `https://www.papikondalutourism.com/blog/${slug}`
+  return {
+    title: `${post.title} | Papikondalu Tourism Blog`,
+    description,
+    keywords: [
+      'Papikondalu', 'Papikondalu travel guide', 'Godavari river tour',
+      'Bhadrachalam Papikondalu', 'Papikondalu hills', 'Andhra Pradesh tourism',
+    ],
+    alternates: { canonical: url },
+    openGraph: {
+      title: post.title,
+      description,
+      url,
+      images: [{ url: post.image, alt: post.title }],
+    },
+    twitter: { card: 'summary_large_image', title: post.title, description, images: [post.image] },
+  }
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
