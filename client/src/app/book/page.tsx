@@ -69,8 +69,8 @@ function BookingWizard({ initSlug }: { initSlug: string }) {
   }, [initSlug])
   const [adults, setAdults] = useState(2)
   const [children, setChildren] = useState(0)
-  const [passengers, setPassengers] = useState<{ name: string; age: string; id: string }[]>([])
-  const [contact, setContact] = useState({ name: '', phone: '', email: '' })
+  const [passengers, setPassengers] = useState<{ name: string; age: string; aadhar: string }[]>([])
+  const [contact, setContact] = useState({ name: '', phone: '', email: '', emergencyName: '', emergencyPhone: '' })
   const [profileLoaded, setProfileLoaded] = useState(false)
   const [payLoading, setPayLoading] = useState(false)
   const [payError, setPayError] = useState('')
@@ -84,7 +84,7 @@ function BookingWizard({ initSlug }: { initSlug: string }) {
   useEffect(() => {
     if (authLoading) return
     if (authUser) {
-      setContact({ name: authUser.name ?? '', phone: authUser.phone ?? '', email: authUser.email ?? '' })
+      setContact({ name: authUser.name ?? '', phone: authUser.phone ?? '', email: authUser.email ?? '', emergencyName: '', emergencyPhone: '' })
     }
     setProfileLoaded(true)
   }, [authUser, authLoading])
@@ -92,7 +92,7 @@ function BookingWizard({ initSlug }: { initSlug: string }) {
   // Sync passenger array with guest count
   useEffect(() => {
     const count = adults + children
-    setPassengers(prev => Array.from({ length: count }, (_, i) => prev[i] ?? { name: '', age: '', id: '' }))
+    setPassengers(prev => Array.from({ length: count }, (_, i) => prev[i] ?? { name: '', age: '', aadhar: '' }))
   }, [adults, children])
 
   const handlePay = async () => {
@@ -110,6 +110,7 @@ function BookingWizard({ initSlug }: { initSlug: string }) {
           contactName: contact.name,
           contactPhone: contact.phone,
           contactEmail: contact.email,
+          emergencyContact: { name: contact.emergencyName, phone: contact.emergencyPhone },
           passengers,
         }),
       })
@@ -249,22 +250,31 @@ function BookingWizard({ initSlug }: { initSlug: string }) {
                 <input className="input-field" placeholder="Email" type="email" value={contact.email} onChange={e => setContact(c => ({ ...c, email: e.target.value }))} />
               </div>
             </div>
+            <div className="card p-4 mb-4">
+              <h3 className="font-medium text-ink text-sm mb-3">🚨 Emergency Contact</h3>
+              <div className="space-y-2">
+                <input className="input-field" placeholder="Emergency contact name *" value={contact.emergencyName} onChange={e => setContact(c => ({ ...c, emergencyName: e.target.value }))} />
+                <input className="input-field" placeholder="Emergency contact phone *" type="tel" value={contact.emergencyPhone} onChange={e => setContact(c => ({ ...c, emergencyPhone: e.target.value }))} />
+              </div>
+            </div>
             <div className="space-y-3 mb-5">
               {passengers.map((p, i) => (
                 <div key={i} className="card p-4">
                   <h3 className="font-medium text-ink text-sm mb-3">Passenger {i + 1} {i < adults ? '(Adult)' : '(Child)'}</h3>
                   <div className="space-y-2">
-                    <input className="input-field" placeholder="Full name" value={p.name} onChange={e => { const a = [...passengers]; a[i] = { ...a[i], name: e.target.value }; setPassengers(a) }} />
-                    <div className="grid grid-cols-2 gap-2">
-                      <input className="input-field" placeholder="Age" type="number" min="1" value={p.age} onChange={e => { const a = [...passengers]; a[i] = { ...a[i], age: e.target.value }; setPassengers(a) }} />
-                      <input className="input-field" placeholder="ID no. (Aadhaar/Passport)" value={p.id} onChange={e => { const a = [...passengers]; a[i] = { ...a[i], id: e.target.value }; setPassengers(a) }} />
+                    <input className="input-field" placeholder="Full name *" value={p.name} onChange={e => { const a = [...passengers]; a[i] = { ...a[i], name: e.target.value }; setPassengers(a) }} />
+                    <input className="input-field" placeholder="Age" type="number" min="1" value={p.age} onChange={e => { const a = [...passengers]; a[i] = { ...a[i], age: e.target.value }; setPassengers(a) }} />
+                    <div>
+                      <input className="input-field" placeholder="Aadhar Number (12 digits) *" type="text" inputMode="numeric" maxLength={12}
+                        value={p.aadhar} onChange={e => { const a = [...passengers]; a[i] = { ...a[i], aadhar: e.target.value.replace(/\D/g, '').slice(0, 12) }; setPassengers(a) }} />
+                      {p.aadhar && p.aadhar.length !== 12 && <p className="text-red-500 text-xs mt-1">Aadhar must be exactly 12 digits</p>}
                     </div>
                   </div>
                 </div>
               ))}
             </div>
             <button onClick={() => setStep(3)}
-              disabled={!contact.name || !contact.phone || !contact.email || passengers.some(p => !p.name)}
+              disabled={!contact.name || !contact.phone || !contact.email || !contact.emergencyName || !contact.emergencyPhone || passengers.some(p => !p.name || p.aadhar.length !== 12)}
               className="btn-primary w-full justify-center disabled:opacity-50">Review Booking →</button>
           </div>
         )}
@@ -280,10 +290,18 @@ function BookingWizard({ initSlug }: { initSlug: string }) {
                 ['Departure', new Date(date + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' })],
                 ['Guests', `${adults} adult${adults !== 1 ? 's' : ''}${children ? ` + ${children} child${children !== 1 ? 'ren' : ''}` : ''}`],
                 ['Contact', `${contact.name} · ${contact.phone}`],
+                ['Emergency', `${contact.emergencyName} · ${contact.emergencyPhone}`],
               ].map(([k, v]) => (
                 <div key={k} className="flex justify-between text-sm gap-4">
                   <span className="text-muted flex-shrink-0">{k}</span>
                   <span className="font-medium text-ink text-right">{v}</span>
+                </div>
+              ))}
+              <hr className="border-gray-100" />
+              {passengers.map((p, i) => (
+                <div key={i} className="flex justify-between text-sm gap-4">
+                  <span className="text-muted flex-shrink-0">P{i + 1} Aadhar</span>
+                  <span className="font-medium text-ink text-right font-mono">{p.name} · XXXX XXXX {p.aadhar.slice(-4)}</span>
                 </div>
               ))}
               <hr className="border-gray-100" />

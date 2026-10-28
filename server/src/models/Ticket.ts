@@ -1,5 +1,4 @@
 import { Schema, model, Document, Types } from 'mongoose'
-import { v4 as uuidv4 } from 'uuid'
 
 export interface ITicket extends Document {
   booking: Types.ObjectId
@@ -19,7 +18,7 @@ export interface ITicket extends Document {
 const TicketSchema = new Schema<ITicket>({
   booking: { type: Schema.Types.ObjectId, ref: 'Booking', required: true },
   contactName: { type: String, default: '' },
-  ticketId: { type: String, default: () => `TKT-${uuidv4().toUpperCase()}` },
+  ticketId: { type: String },
   qrPayload: { type: String, required: true },
   isValid: { type: Boolean, default: true },
   checkedIn: { type: Boolean, default: false },
@@ -33,5 +32,17 @@ const TicketSchema = new Schema<ITicket>({
 
 TicketSchema.index({ ticketId: 1 }, { unique: true })
 TicketSchema.index({ booking: 1 }, { unique: true })
+
+// Generate sequential ticket ID: YYYYMMMDD0001
+TicketSchema.pre('save', async function () {
+  if (this.ticketId) return
+  const now = new Date()
+  const yyyy = now.getFullYear()
+  const mmm = now.toLocaleString('en-US', { month: 'short' }).toUpperCase()
+  const dd = String(now.getDate()).padStart(2, '0')
+  const prefix = `${yyyy}${mmm}${dd}`
+  const count = await (this.constructor as any).countDocuments({ ticketId: { $regex: `^${prefix}` } })
+  this.ticketId = `${prefix}${String(count + 1).padStart(4, '0')}`
+})
 
 export default model<ITicket>('Ticket', TicketSchema)

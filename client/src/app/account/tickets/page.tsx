@@ -82,6 +82,16 @@ export default function TicketsPage() {
                         <Download className="w-3.5 h-3.5" /> Download PDF
                       </button>
                     </div>
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <p className="text-xs font-semibold text-ink mb-2">Terms & Conditions</p>
+                      <ul className="text-xs text-muted space-y-1.5 list-disc list-inside">
+                        <li>Full refund if the trip is cancelled by us due to weather/climate conditions or government orders.</li>
+                        <li>Cancellation 2 days before departure: <strong className="text-ink">75% refund</strong>.</li>
+                        <li>Cancellation 1 day before departure: <strong className="text-ink">50% refund</strong>. No refund on the day of travel.</li>
+                        <li><strong className="text-ink">Aadhar card copy is mandatory</strong> — carry it and submit to the boat management at boarding.</li>
+                        <li>Transport provided is a <strong className="text-ink">Tata Magic vehicle</strong>, shared among up to 10 passengers.</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               ))}

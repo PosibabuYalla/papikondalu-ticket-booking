@@ -9,12 +9,13 @@ export interface IBooking extends Document {
   customer: Types.ObjectId
   package: Types.ObjectId
   departure: Types.ObjectId
-  passengers: { name: string; ageCategory: 'adult' | 'child' }[]
+  passengers: { name: string; ageCategory: 'adult' | 'child'; aadhar: string }[]
   adultCount: number
   childCount: number
   leadPassengerName: string
   leadPassengerPhone: string
   leadPassengerEmail: string
+  emergencyContact: { name: string; phone: string }
   fareBreakdown: {
     adultPrice: number; childPrice: number;
     adultTotal: number; childTotal: number;
@@ -37,12 +38,16 @@ const BookingSchema = new Schema<IBooking>({
   customer: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   package: { type: Schema.Types.ObjectId, ref: 'Package', required: true },
   departure: { type: Schema.Types.ObjectId, ref: 'Departure', required: true },
-  passengers: [{ name: String, ageCategory: { type: String, enum: ['adult','child'], default: 'adult' } }],
+  passengers: [{ name: String, ageCategory: { type: String, enum: ['adult','child'], default: 'adult' }, aadhar: { type: String, required: true } }],
   adultCount: { type: Number, required: true, min: 1 },
   childCount: { type: Number, default: 0 },
   leadPassengerName: { type: String, required: true },
   leadPassengerPhone: { type: String, required: true },
   leadPassengerEmail: { type: String, required: true },
+  emergencyContact: {
+    name: { type: String, required: true },
+    phone: { type: String, required: true },
+  },
   fareBreakdown: {
     adultPrice: Number, childPrice: Number,
     adultTotal: Number, childTotal: Number,

@@ -17,11 +17,15 @@ const holdSchema = z.object({
   contactName: z.string().min(2),
   contactPhone: z.string().min(7),
   contactEmail: z.string().email(),
+  emergencyContact: z.object({
+    name: z.string().min(2),
+    phone: z.string().min(7),
+  }),
   passengers: z.array(z.object({
     name: z.string(),
     age: z.string().optional(),
-    id: z.string().optional(),
-  })).optional(),
+    aadhar: z.string().regex(/^\d{12}$/, 'Aadhar must be exactly 12 digits'),
+  })),
 })
 
 /** Release heldSeats for bookings whose hold window has expired. */
@@ -43,7 +47,7 @@ async function releaseExpiredHolds(): Promise<void> {
 export async function holdSeats(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
   const session = await mongoose.startSession()
   try {
-    const { packageSlug, departureDate, adults, children, contactName, contactPhone, contactEmail, passengers } = holdSchema.parse(req.body)
+    const { packageSlug, departureDate, adults, children, contactName, contactPhone, contactEmail, emergencyContact, passengers } = holdSchema.parse(req.body)
     const totalSeats = adults + children
 
     // Release seats from holds that have already expired so they don't
@@ -98,8 +102,9 @@ export async function holdSeats(req: AuthRequest, res: Response, next: NextFunct
       const tax = Math.round(subtotal * 0.05)
       const total = subtotal + tax
 
-      const passengerList = (passengers ?? []).map((p, i) => ({
+      const passengerList = passengers.map((p, i) => ({
         name: p.name,
+        aadhar: p.aadhar,
         ageCategory: i < adults ? 'adult' : 'child',
       }))
 
@@ -112,6 +117,7 @@ export async function holdSeats(req: AuthRequest, res: Response, next: NextFunct
         leadPassengerName: contactName,
         leadPassengerPhone: contactPhone,
         leadPassengerEmail: contactEmail,
+        emergencyContact,
         passengers: passengerList,
         fareBreakdown: {
           adultPrice,
