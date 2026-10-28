@@ -149,7 +149,7 @@ const bookingSchema = z.object({
   leadPassengerName: z.string().min(2),
   leadPassengerPhone: z.string().min(7),
   leadPassengerEmail: z.string().email(),
-  passengers: z.array(z.object({ name: z.string(), ageCategory: z.enum(['adult', 'child']) })).optional(),
+  passengers: z.array(z.object({ name: z.string(), ageCategory: z.enum(['adult', 'child']), aadhar: z.string() })).optional(),
   specialRequests: z.string().optional(),
 })
 
@@ -161,7 +161,7 @@ export async function createBooking(req: AuthRequest, res: Response, next: NextF
     booking.leadPassengerName = leadPassengerName
     booking.leadPassengerPhone = leadPassengerPhone
     booking.leadPassengerEmail = leadPassengerEmail
-    if (passengers) booking.passengers = passengers as Array<{ name: string; ageCategory: 'adult' | 'child' }>
+    if (passengers) booking.passengers = passengers as Array<{ name: string; ageCategory: 'adult' | 'child'; aadhar: string }>
     if (specialRequests) booking.specialRequests = specialRequests
     await booking.save()
     res.json({ booking })
